@@ -1,0 +1,68 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block content %}
+
+<main id="main" class="main">
+
+  
+    <div class="pagetitle">
+      <h1>Data Tables</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active">Data</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Student List</h5>
+            
+
+              <!-- Table with stripped rows -->
+               <div class="table-responsive">
+              <table class="table datatable">
+                <thead>
+                  <tr>
+                    <th>
+                    Student ID
+                    </th>
+                    <th>Name</th>
+                    <th>Course</th>
+                    <th>Year and Section</th>
+                    <th>Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for student in students %}
+                  <tr>
+                    <td>{{ student.student_id}}</td>
+                    <td>{{student.full_name}}</td>
+                    <td>{{student.course}}</td>
+                    <td>{{student.year_section}}</td>
+                    <td>{{student.email}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                
+              </table>
+            </div>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+
+{% endblock %}

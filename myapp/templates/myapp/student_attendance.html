@@ -1,0 +1,233 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block content %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Data Tables</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+        <li class="breadcrumb-item">Tables</li>
+        <li class="breadcrumb-item active">Data</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Student Attendance</h5>
+     
+          <div class="d-flex justify-content-between mb-3">
+            <!-- Time Frame Filter -->
+            <div class="col-md-4">
+                <label for="timeframe" class="form-label me-1">Filter by Time Frame</label>
+                <select class="form-select d-inline-block w-auto" id="timeframe">
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+        
+            <!-- Add Student Button -->
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+                <i class="fa-solid fa-plus"></i> Add Student
+            </button>
+        </div>
+
+
+         <!-- Table with stripped rows -->
+         <div class="table-responsive">
+          <table class="table datatable">
+              <thead>
+                  <tr>
+                      <th><b>Name</b></th>
+                      <th>Ext.</th>
+                      <th>City</th>
+                      <th data-type="date" data-format="YYYY/DD/MM">Start Date</th>
+                      <th>Completion</th>
+                  </tr>
+              </thead>
+              <tbody id="attendance-data">
+                  <!-- Data rows go here dynamically -->
+              </tbody>
+          </table>
+        </div>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  <!-- Add Student Modal -->
+<div class="modal fade " id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered mw-100 mx-auto" style="width:750px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addStudentModalLabel">Add Students to Subject</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Search Bar -->
+        <input type="text" class="form-control mb-3" id="searchStudent" placeholder="Search students...">
+        <!-- Student List with Checkboxes -->
+        
+<div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col"></th> <!-- Checkbox column -->
+      <th scope="col">Student ID</th>
+      <th scope="col">Full Name</th>
+      <th scope="col">Course</th>
+      <th scope="col">Year/Section</th>
+    </tr>
+  </thead>
+  <tbody id="studentsTable">
+    {% for student in students %}
+    <tr>
+      <td><input type="checkbox" class="student-checkbox" data-id="{{ student.id }}"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" class="student-checkbox"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" class="student-checkbox"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" class="student-checkbox"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" class="student-checkbox"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" class="student-checkbox"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+    <tr>
+      <td><input type="checkbox" class="student-checkbox"></td>
+      <td>{{ student.student_id }}</td>
+      <td>{{ student.full_name }}</td>
+      <td>{{ student.course }}</td>
+      <td>{{ student.year_section }}</td>
+    </tr>
+   
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="addSelectedStudents">Add Selected Students</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</main><!-- End #main -->
+
+
+<script>
+  // jQuery for handling filter changes
+  $(document).ready(function() {
+
+      $("#searchStudent").on("keyup", function(){
+        var value = $(this).val().toLowerCase();
+        $("#studentsTable tr").filter(function(){
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > - 1)
+        });
+      });
+
+
+    const tableData = [
+      {
+        name: "Unity Pugh",
+        ext: "9958",
+        city: "Curicó",
+        startDate: "2005/02/11",
+        completion: "37%"
+      },
+      {
+        name: "Theodore Duran",
+        ext: "8971",
+        city: "Dhanbad",
+        startDate: "1999/04/07",
+        completion: "97%"
+      },
+      // Add more records as necessary
+    ];
+
+    function loadFilteredData(timeFrame) {
+      let filteredData = tableData;
+      const today = new Date();
+      const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay())); // Set to the start of the week
+      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // Set to the start of the month
+
+      if (timeFrame === "today") {
+        filteredData = tableData.filter(item => new Date(item.startDate).toDateString() === new Date().toDateString());
+      } else if (timeFrame === "week") {
+        filteredData = tableData.filter(item => new Date(item.startDate) >= startOfWeek);
+      } else if (timeFrame === "month") {
+        filteredData = tableData.filter(item => new Date(item.startDate) >= startOfMonth);
+      }
+
+      // Clear current table and insert filtered rows
+      $('#attendance-data').empty();
+      filteredData.forEach(item => {
+        $('#attendance-data').append(`
+          <tr>
+            <td>${item.name}</td>
+            <td>${item.ext}</td>
+            <td>${item.city}</td>
+            <td>${item.startDate}</td>
+            <td>${item.completion}</td>
+          </tr>
+        `);
+      });
+    }
+
+    // Load data initially for "Today"
+    loadFilteredData("today");
+
+    // Change filter based on dropdown selection
+    $('#timeframe').change(function() {
+      const selectedTimeframe = $(this).val();
+      loadFilteredData(selectedTimeframe);
+    });
+  });
+</script>
+
+{% endblock %}

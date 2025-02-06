@@ -1,0 +1,118 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block content %}
+<main id="main" class="main">
+  <div class="container mt-1">
+    <div id="message"></div>
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#verticalycentered">
+      <i class="fa-solid fa-plus"></i> Add Subjects
+    </button>
+  <!-- Modal -->
+  <div class="modal fade" id="verticalycentered" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add New Subject</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addSubjectForm">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="name" class="form-label">Subject Name</label>
+              <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="row">
+      {% for subject in subjects %}
+      <!-- Subject Card 1 -->
+      <div class="col-md-4 mb-4">
+        <div class="card shadow-lg border-0 rounded h-100">
+          <!-- Subject Header with Dropdown -->
+          <div class="d-flex align-items-center justify-content-between p-3 text-white fw-bold" style="background-color: #3f72af; border-radius: .375rem .375rem 0 0;">
+            <span>{{subject.name}}</span>
+            
+            <div class="dropdown">
+
+              <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="{% url 'student-attendance' %}">View Students</a></li>
+                <li><a class="dropdown-item" href="{% url 'student-attendance' %}">View Attendance</a></li>
+               
+              </ul>
+            </div>
+          </div>
+          <div class="card-body bg-white text-dark">
+            <p class="text-muted">{{ subject.description|default:"No description available." }}</p>
+            <small class="text-muted">Created on: {{ subject.created_at|date:"F d, Y" }}</small>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
+    </div><!-- End Row -->
+  </div><!-- End Container -->
+</main>
+
+
+<script>
+$(document).ready(function () {
+  $('#addSubjectForm').submit(function (e) {
+    e.preventDefault();
+
+    var csrftoken = '{{ csrf_token }}';
+    var formData = {
+      'name': $('#name').val(),
+      'description': $('#description').val(),
+    };
+
+    $.ajax({
+      type: "POST",
+      url: "{% url 'add_subject' %}",
+      data: JSON.stringify(formData),  
+      contentType: 'application/json', 
+      headers: {"X-CSRFToken": csrftoken},
+      success: function (response) {
+        if (response.status === "success") {
+          $('#message').html('<div class="alert alert-primary alert-dismissible fade show" role="alert"><i class="bi bi-star me-1"></i>' + response.message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+           $('#verticalycentered').modal('hide');
+          $('#addSubjectForm')[0].reset();
+          setTimeout(function(){
+            location.reload();
+          },500);
+        } else {
+        
+          $('#message').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="bi bi-exclamation-triangle me-1"></i>' + response.message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+        }
+     
+      },
+      error: function () {
+        $('#message').html('<div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="bi bi-exclamation-triangle me-1"></i>Something went wrong. Please try again later.<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>');
+      }
+    });
+    setTimeout(function() {
+        $('.alert').fadeOut(500, function () { $(this).remove(); });
+      }, 3000);
+  });
+});
+
+</script>
+
+
+
+{% endblock %}
