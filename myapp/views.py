@@ -142,11 +142,31 @@ def teacher_subjects(request):
     return render(request, 'myapp/teacher_subjects.html', {'subjects': subjects})
 
 
-def student_attendance(request):
+def student_attendance(request, id):
+    subject = get_object_or_404(Subject, id=id)
     students = Student.objects.all()
-    
-    return render(request, 'myapp/student_attendance.html',{'students':students})
+    if request.method == "POST":
+        student_ids = request.POST.getlist("student_ids[]")  # Get selected student IDs
+        for student_id in student_ids:
+            student = get_object_or_404(Student, id=student_id)
+            subject.students.add(student)  # Add student to the subject
 
+        return JsonResponse({"message": "Students successfully added!", "status": "success"})
+    
+    return render(request, 'myapp/student_attendance.html',{'students':students, 'subject':subject})
+
+def add_students_to_subject(request, subject_id):
+    if request.method == "POST":
+        student_ids = request.POST.getlist("student_ids[]")
+        subject = get_object_or_404(Subject, id=subject_id)
+        
+        for student_id in student_ids:
+            student = get_object_or_404(Student, id=student_id)
+            subject.students.add(student)
+        
+        return JsonResponse({"message": "Students successfully added!", "status":"success"})
+    
+    return JsonResponse({"message": "Failed to add students.", "status":"error"})
 
 
 

@@ -21,7 +21,7 @@
 
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Student Attendance</h5>
+            <h5 class="card-title">Student Attendance for {{subject.name}}</h5>
      
           <div class="d-flex justify-content-between mb-3">
             <!-- Time Frame Filter -->
@@ -41,31 +41,34 @@
         </div>
 
 
-         <!-- Table with stripped rows -->
-         <div class="table-responsive">
+        
+        <div class="table-responsive">
           <table class="table datatable">
-              <thead>
-                  <tr>
-                      <th><b>Name</b></th>
-                      <th>Ext.</th>
-                      <th>City</th>
-                      <th data-type="date" data-format="YYYY/DD/MM">Start Date</th>
-                      <th>Completion</th>
-                  </tr>
-              </thead>
-              <tbody id="attendance-data">
-                  <!-- Data rows go here dynamically -->
-              </tbody>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Course</th>
+                <th>Year/Section</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+                <tr>
+                  <td>{{ student.full_name }}</td>
+                  <td>{{ student.student_id }}</td>
+                  <td>{{ student.course }}</td>
+                  <td>{{ student.year_section }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
           </table>
         </div>
-            <!-- End Table with stripped rows -->
-
-          </div>
-        </div>
-
       </div>
     </div>
-  </section>
+  </div>
+</div>
+</section>
   <!-- Add Student Modal -->
 <div class="modal fade " id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered mw-100 mx-auto" style="width:750px;">
@@ -98,50 +101,7 @@
       <td>{{ student.full_name }}</td>
       <td>{{ student.course }}</td>
       <td>{{ student.year_section }}</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="student-checkbox"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="student-checkbox"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="student-checkbox"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="student-checkbox"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="student-checkbox"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="student-checkbox"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>
-   
+    </tr>  
     {% endfor %}
   </tbody>
 </table>
@@ -170,8 +130,31 @@
           $(this).toggle($(this).text().toLowerCase().indexOf(value) > - 1)
         });
       });
+      $('#addSelectedStudents').click(function() {
+      var selectedStudents = [];
+      $('.student-checkbox:checked').each(function() {
+        selectedStudents.push($(this).data('id'));
+      });
 
-
+      if (selectedStudents.length > 0) {
+        $.ajax({
+          url: "{% url 'add-students-to-subject' subject.id %}",
+          method: "POST",
+          data: {
+            'student_ids[]': selectedStudents,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          success: function(response) {
+            if (response.status === "success") {
+              location.reload(); // Reload page to display updated students
+            } else {
+              alert(response.message);
+            }
+          }
+        });
+      }
+    });
+  
     const tableData = [
       {
         name: "Unity Pugh",
