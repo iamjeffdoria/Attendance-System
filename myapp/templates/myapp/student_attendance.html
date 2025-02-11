@@ -53,7 +53,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for student in students %}
+              {% for student in assigned_students %}
                 <tr>
                   <td>{{ student.full_name }}</td>
                   <td>{{ student.student_id }}</td>
@@ -82,8 +82,8 @@
         <input type="text" class="form-control mb-3" id="searchStudent" placeholder="Search students...">
         <!-- Student List with Checkboxes -->
         
-<div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-<table class="table table-bordered">
+<div class="table-responsive" style="max-height: 300px; overflow-y: auto; min-height: 300px;">
+<table class="table table-bordered table-responsive">
   <thead>
     <tr>
       <th scope="col"></th> <!-- Checkbox column -->
@@ -94,15 +94,16 @@
     </tr>
   </thead>
   <tbody id="studentsTable">
-    {% for student in students %}
-    <tr>
-      <td><input type="checkbox" class="student-checkbox" data-id="{{ student.id }}"></td>
-      <td>{{ student.student_id }}</td>
-      <td>{{ student.full_name }}</td>
-      <td>{{ student.course }}</td>
-      <td>{{ student.year_section }}</td>
-    </tr>  
+    {% for student in available_students %}
+      <tr>
+        <td><input type="checkbox" class="student-checkbox" data-id="{{ student.id }}"></td>
+        <td>{{ student.student_id }}</td>
+        <td>{{ student.full_name }}</td>
+        <td>{{ student.course }}</td>
+        <td>{{ student.year_section }}</td>
+      </tr>  
     {% endfor %}
+    
   </tbody>
 </table>
 </div>

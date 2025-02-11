@@ -16,6 +16,7 @@ class Teacher(models.Model):
 class Subject(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
+    course_year_section = models.CharField(max_length=100, default="default_course_year_section")
     teacher = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="subjects")
     created_at = models.DateTimeField(auto_now_add=True)
 

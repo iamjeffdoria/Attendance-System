@@ -26,6 +26,10 @@
               <label for="description" class="form-label">Description</label>
               <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
             </div>
+            <div class="mb-3">
+              <label for="course_year_section" class="form-label">Course, Year and Section</label>
+              <input type="text" class="form-control" id="course_year_section" name="course_year_section" rows="3" required></input>
+            </div>
             <button type="submit" class="btn btn-primary">Save changes</button>
           </form>
         
@@ -78,6 +82,7 @@ $(document).ready(function () {
     var csrftoken = '{{ csrf_token }}';
     var formData = {
       'name': $('#name').val(),
+      'course_year_section': $('#course_year_section').val(),
       'description': $('#description').val(),
     };
 
