@@ -174,6 +174,7 @@ def add_students_to_subject(request, subject_id):
         for student_id in student_ids:
             student = get_object_or_404(Student, id=student_id)
             subject.students.add(student)
+            messages.success(request, "Student added successfully!")
 
         return JsonResponse({"message": "Students successfully added!", "status":"success"})
 
