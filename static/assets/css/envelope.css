@@ -55,23 +55,35 @@
   }
   .envelope > .letter {
     position: absolute;
-    right: 20%;
+    left: 50%;
     bottom: 0;
-    width: 54%;
-    height: 80%;
+    width: 90%;
+    height: 85%;
     background: var(--primary);
     text-align: center;
     transition: all 1s ease-in-out;
     box-shadow: 0 0 5px var(--shadow-color);
-    padding: 20px 10px;
-  }
-  
-  .envelope > .letter > .text {
+    padding: 20px;
+    transform: translate(-50%, 90%); /* Keep it inside the envelope */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1;
+    opacity: 0; /* Initially hidden */
+}
+
+
+.envelope > .letter > .text {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     color: var(--txt-color);
-    text-align: left;
-    font-size: 10px;
-  }
+    text-align: center; /* Center text */
+    font-size: 12px; /* Increase font size */
+    line-height: 1.4; /* Better spacing */
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
   .heart {
     position: absolute;
     top: 50%;
@@ -105,10 +117,15 @@
     z-index: 0;
   }
   .flap > .envelope > .letter {
-    bottom: 100px;
-    transform: scale(1.5);
-    transition-delay: 1s;
-  }
+    bottom: 50%; /* Move to the center of the viewport */
+    left: 50%;
+    transform: translate(-50%, 50%) scale(1.2); /* Perfectly center it */
+    transition-delay: 0.5s;
+    z-index: 10; /* Ensure it's above everything, including the heart */
+    opacity: 1; /* Make the letter fully visible */
+}
+
+
   .flap > .heart {
     transform: rotate(90deg);
     transition-delay: 0.4s;
