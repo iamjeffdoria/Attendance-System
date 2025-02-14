@@ -181,4 +181,8 @@ def add_students_to_subject(request, subject_id):
     return JsonResponse({"error": "Invalid request"}, status=400)
 
 
+def envelope_view(request):
+    content = {'exclude_layout': True, }
+    return render(request, 'myapp/envelope.html',content)
+
 
