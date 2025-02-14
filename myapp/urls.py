@@ -5,7 +5,7 @@ from django.urls import path
 from .import views
 
 urlpatterns = [
-    path('', views.envelope_view, name="teacher-login"),
+    path('', views.teacher_login, name="teacher-login"),
     path("teacher-dashboard/", views.teacher_dashboard, name="teacher-dashboard"),
     path("teacher-register/", views.teacher_registration, name="teacher-register"),
     path("custom-logout/", views.custom_logout, name="custom-logout"),

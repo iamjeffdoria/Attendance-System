@@ -26,6 +26,15 @@
     background: var(--bg-envelope-color);
     box-shadow: 0 0 40px var(--shadow-color);
   }
+
+
+  .envelope {
+    position: relative;
+    width: 300px;
+    height: 230px;
+    overflow: hidden; /* Keeps letter inside initially */
+}
+
   .envelope-wrapper > .envelope {
     position: relative;
     width: 300px;
@@ -54,25 +63,21 @@
     border-left: 150px solid var(--envelope-cover);
   }
   .envelope > .letter {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 90%;
-    height: 85%;
-    background: var(--primary);
-    text-align: center;
-    transition: all 1s ease-in-out;
-    box-shadow: 0 0 5px var(--shadow-color);
-    padding: 20px;
-    transform: translate(-50%, 90%); /* Keep it inside the envelope */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    z-index: 1;
-    opacity: 0; /* Initially hidden */
-}
-
+      position: absolute;
+      left: 50%;
+      bottom: -90%; /* Initially hidden inside the envelope */
+      width: 90%;
+      height: 85%;
+      background: var(--primary);
+      text-align: center;
+      transition: transform 1s ease-in-out, opacity 0.5s ease-in-out;
+      box-shadow: 0 0 5px var(--shadow-color);
+      padding: 20px;
+      transform: translate(-50%, 100%); /* Inside the envelope */
+      opacity: 0; /* Hidden until animation starts */
+      z-index: 1;
+  }
+  
 
 .envelope > .letter > .text {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -116,15 +121,13 @@
     transform: rotateX(180deg);
     z-index: 0;
   }
-  .flap > .envelope > .letter {
-    bottom: 50%; /* Move to the center of the viewport */
-    left: 50%;
-    transform: translate(-50%, 50%) scale(1.2); /* Perfectly center it */
-    transition-delay: 0.5s;
-    z-index: 10; /* Ensure it's above everything, including the heart */
-    opacity: 1; /* Make the letter fully visible */
-}
 
+.flap > .envelope > .letter {
+    bottom: 0; /* Moves up from the envelope */
+    transform: translate(-50%, -10%); /* Slightly above the envelope */
+    opacity: 1; /* Becomes visible after emerging */
+    transition-delay: 0.3s; /* Delays visibility for realism */
+}
 
   .flap > .heart {
     transform: rotate(90deg);
