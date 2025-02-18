@@ -39,47 +39,88 @@
 
       <!-- Action Buttons -->
       <div class="d-flex flex-column flex-md-row gap-3">
-          <button type="button" class="btn btn-success btn-sm px-4 py-2" id="startLogin">
-              <i class="fa-solid fa-sign-in-alt"></i> Time In
+        <button type="button" class="btn btn-primary btn-sm px-4 py-2" id="startAttendance" data-bs-toggle="modal" data-bs-target="#attendanceChoiceModal">
+          <i class="fa-solid fa-play"></i> Start Attendance
+      </button>
+          <button type="button" class="btn btn-success px-4 py-2" id="printAttendance">
+            <i class="bi bi-printer"></i> Print
           </button>
-          <button type="button" class="btn btn-danger btn-sm px-4 py-2" id="startLogout">
-              <i class="fa-solid fa-sign-out-alt"></i> Time Out
-          </button>
+    
           <button type="button" class="btn btn-outline-primary btn-sm px-4 py-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
               <i class="fa-solid fa-plus"></i> Add Student
           </button>
       </div>
     </div>
 
-
-        
         <div class="table-responsive">
           <table class="table datatable">
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Student ID</th>
-                <th>Course</th>
-                <th>Year/Section</th>
+             
+    
+                <th>CYS</th>
+                <th>Time In</th>
+                <th>Time Out</th>
+                <th>Attendance Status</th>
+                <th>Time In/ Time Out</th>
               </tr>
             </thead>
             <tbody>
               {% for student in assigned_students %}
                 <tr>
                   <td>{{ student.full_name }}</td>
-                  <td>{{ student.student_id }}</td>
-                  <td>{{ student.course }}</td>
-                  <td>{{ student.year_section }}</td>
+              
+                  <td>{{ student.course }} {{ student.year_section }}</td>
+             
+                  <td>Coming soon...</td>
+                  <td>Coming soon...</td>
+                  <td>Present</td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-success btn-sm mark-attendance" 
+                              data-student="{{ student.id }}" 
+                              data-status="Time In">
+                        <i class="fa-solid fa-sign-in-alt"></i> Time In
+                      </button>
+                 
+                    </div>
+                  </td>
+                  
                 </tr>
               {% endfor %}
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   </div>
 </div>
+
 </section>
+
+
+<!-- Start Attendance Modal -->
+<div class="modal fade" id="attendanceChoiceModal" tabindex="-1" aria-labelledby="attendanceChoiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="attendanceChoiceModalLabel">Select Attendance Action</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="btn btn-success btn-sm w-100" id="startTimeIn">
+          <i class="fa-solid fa-sign-in-alt"></i> Time In
+        </button>
+        <button type="button" class="btn btn-danger btn-sm w-100 mt-2" id="startTimeOut">
+          <i class="fa-solid fa-sign-out-alt"></i> Time Out
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- Add Student Modal -->
 <div class="modal fade " id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered mw-100 mx-auto" style="width:750px;">
@@ -94,7 +135,7 @@
         <!-- Student List with Checkboxes -->
         
 <div class="table-responsive" style="max-height: 300px; overflow-y: auto; min-height: 300px;">
-<table class="table table-bordered table-responsive">
+<table class="table table-bordered">
   <thead>
     <tr>
       <th scope="col"></th> <!-- Checkbox column -->
@@ -135,6 +176,30 @@
 <script>
   // jQuery for handling filter changes
   $(document).ready(function() {
+
+    $(".mark-attendance").click(function() {
+        let button = $(this);
+        let studentId = button.data("student");
+        let status = button.data("status");
+        let timeNow = new Date().toLocaleTimeString(); // Get current time
+
+        if (status === "Time In") {
+            // Change button to Time Out
+            button.removeClass("btn-success").addClass("btn-danger");
+            button.html('<i class="fa-solid fa-sign-out-alt"></i> Time Out');
+            button.data("status", "Time Out");
+
+            // Update time in column (assuming an element with id="time-in-{student_id}" exists)
+            $("#time-in-" + studentId).text(timeNow);
+        } 
+        else if (status === "Time Out") {
+            // Disable button after time out is marked
+            button.prop("disabled", true);
+
+            // Update time out column (assuming an element with id="time-out-{student_id}" exists)
+            $("#time-out-" + studentId).text(timeNow);
+        }
+    });
 
       $("#searchStudent").on("keyup", function(){
         var value = $(this).val().toLowerCase();
@@ -213,15 +278,7 @@
         `);
       });
     }
-    document.getElementById("startLogin").addEventListener("click", function() {
-        alert("Login process started!"); 
-        // Add AJAX or any login-related functionality here
-    });
 
-    document.getElementById("startLogout").addEventListener("click", function() {
-        alert("Logout process started!");
-        // Add AJAX or any logout-related functionality here
-    });
 
     // Load data initially for "Today"
     loadFilteredData("today");
