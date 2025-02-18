@@ -12,6 +12,8 @@ from django.http import JsonResponse,HttpResponseRedirect
 
 
 def teacher_dashboard(request):
+    if 'teacher_username' not in request.session:
+        return redirect('teacher-login')
     return render(request, 'myapp/teacher_dashboard.html')
 
 
