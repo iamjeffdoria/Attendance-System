@@ -3,6 +3,18 @@
 {% block content %}
 
 <main id="main" class="main">
+  <!-- Attendance Alert Toast -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <div id="attendanceToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+          <div class="toast-body" id="toastMessage">
+              Attendance Marked
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+  </div>
+</div>
+
 
   <div class="pagetitle">
     <h1>Data Tables</h1>
@@ -22,7 +34,19 @@
       <div class="col-lg-12">
 
         <div class="card">
-          <div class="card-body">
+
+    <div id="attendanceTimerContainer" class="card shadow-lg d-none draggable" 
+    style="max-width: 300px; position: fixed; bottom: 20px; right: 20px; z-index: 1050; cursor: grab;">
+    <div class="card-body text-center">
+        <h5 id="attendanceTimerTitle" class="card-title text-primary">Attendance Ongoing</h5>
+        <h3 id="attendanceTimer" class="fw-bold">00:00:00</h3>
+        <button id="closeTimer" class="btn btn-danger btn-sm mt-2 w-100">
+            <i class="fa-solid fa-times"></i> Close Timer
+        </button>
+    </div>
+</div>
+
+      
             <h5 class="card-title">Student Attendance for {{subject.name}}-{{subject.course_year_section}}</h5>
     <!-- Buttons Container -->
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center gap-3 py-2 px-3">
@@ -72,17 +96,28 @@
                   <td>{{ student.full_name }}</td>
               
                   <td>{{ student.course }} {{ student.year_section }}</td>
-             
-                  <td>Coming soon...</td>
-                  <td>Coming soon...</td>
+                  <td id="time-in-{{ student.id }}">
+                    {% if student.attendance.time_in %} 
+                        {{ student.attendance.time_in|time:"g:i A" }} <!-- ✅ Shows 12-hour format -->
+                    {% else %} -- {% endif %}
+                </td>
+                <td id="time-out-{{ student.id }}">
+                    {% if student.attendance.time_out %} 
+                        {{ student.attendance.time_out|time:"g:i A" }} <!-- ✅ Shows 12-hour format -->
+                    {% else %} -- {% endif %}
+                </td>
+                
+                                
                   <td>Present</td>
                   <td>
                     <div class="btn-group" role="group">
                       <button class="btn btn-success btn-sm mark-attendance" 
-                              data-student="{{ student.id }}" 
-                              data-status="Time In">
-                        <i class="fa-solid fa-sign-in-alt"></i> Time In
-                      </button>
+                      data-student="{{ student.id }}" 
+                      data-status="Time In"
+                      disabled> <!-- Disabled by default -->
+                <i class="fa-solid fa-sign-in-alt"></i> Time In
+              </button>
+              
                  
                     </div>
                   </td>
@@ -176,31 +211,155 @@
 <script>
   // jQuery for handling filter changes
   $(document).ready(function() {
+    let timerInterval;
+let totalSeconds = 0;
+let currentAttendanceType = ""; // Store current attendance type
 
-    $(".mark-attendance").click(function() {
-        let button = $(this);
-        let studentId = button.data("student");
-        let status = button.data("status");
-        let timeNow = new Date().toLocaleTimeString(); // Get current time
+// Format time as HH:MM:SS
+function formatTime(seconds) {
+    let hrs = Math.floor(seconds / 3600);
+    let mins = Math.floor((seconds % 3600) / 60);
+    let secs = seconds % 60;
+    return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+}
 
-        if (status === "Time In") {
-            // Change button to Time Out
-            button.removeClass("btn-success").addClass("btn-danger");
-            button.html('<i class="fa-solid fa-sign-out-alt"></i> Time Out');
-            button.data("status", "Time Out");
+// Start the timer with a dynamic title and enable buttons
+function startAttendanceTimer(actionType) {
+    if (!timerInterval) {
+        totalSeconds = 0;
+        currentAttendanceType = actionType; // Set the active attendance type
 
-            // Update time in column (assuming an element with id="time-in-{student_id}" exists)
-            $("#time-in-" + studentId).text(timeNow);
-        } 
-        else if (status === "Time Out") {
-            // Disable button after time out is marked
-            button.prop("disabled", true);
+        // Update title dynamically
+        $("#attendanceTimerTitle").text(actionType + " Ongoing");
 
-            // Update time out column (assuming an element with id="time-out-{student_id}" exists)
-            $("#time-out-" + studentId).text(timeNow);
+        // Show the timer card
+        $("#attendanceTimerContainer").removeClass("d-none");
+
+        // Enable buttons in the table based on the selected type
+        $(".mark-attendance").each(function () {
+            let status = $(this).data("status");
+            if (status === actionType) {
+                $(this).prop("disabled", false); // Enable only relevant buttons
+            }
+        });
+
+        // Start the timer
+        timerInterval = setInterval(() => {
+            totalSeconds++;
+            $("#attendanceTimer").text(formatTime(totalSeconds));
+        }, 1000);
+    }
+}
+
+// Stop the timer when manually closed
+function stopAttendanceTimer() {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    $("#attendanceTimerContainer").addClass("d-none");
+    currentAttendanceType = ""; // Reset attendance type
+
+    // Disable all buttons again
+    $(".mark-attendance").prop("disabled", true);
+}
+
+// Start Timer on Time In or Time Out Click
+$("#startTimeIn").click(function () {
+    startAttendanceTimer("Time In");
+    $("#attendanceChoiceModal").modal("hide"); // Hide modal after selection
+});
+
+$("#startTimeOut").click(function () {
+    startAttendanceTimer("Time Out");
+    $("#attendanceChoiceModal").modal("hide"); // Hide modal after selection
+});
+
+// Close Timer when clicking the button
+$("#closeTimer").click(function () {
+    stopAttendanceTimer();
+});
+
+
+
+// Make Timer Draggable
+$(document).ready(function () {
+    let isDragging = false, offsetX, offsetY;
+
+    $("#attendanceTimerContainer").on("mousedown", function (e) {
+        isDragging = true;
+        offsetX = e.clientX - $(this).offset().left;
+        offsetY = e.clientY - $(this).offset().top;
+        $(this).css("cursor", "grabbing");
+    });
+
+    $(document).on("mousemove", function (e) {
+        if (isDragging) {
+            $("#attendanceTimerContainer").css({
+                left: e.clientX - offsetX + "px",
+                top: e.clientY - offsetY + "px",
+                right: "auto", // Reset right positioning
+                bottom: "auto" // Reset bottom positioning
+            });
         }
     });
 
+    $(document).on("mouseup", function () {
+        isDragging = false;
+        $("#attendanceTimerContainer").css("cursor", "grab");
+    });
+});
+$(".mark-attendance").click(function() {
+    let button = $(this);
+    let studentId = button.data("student");
+    let subjectId = "{{ subject.id }}"; 
+    let action = button.data("status"); 
+
+    $.ajax({
+        url: "{% url 'mark-attendance' %}",
+        method: "POST",
+        data: {
+            student_id: studentId,
+            subject_id: subjectId,
+            action: action,
+            csrfmiddlewaretoken: "{{ csrf_token }}"
+        },
+        success: function(response) {
+            if (response.status === "success") {
+                let timeField = response.field === "time_in" ? "#time-in-" + studentId : "#time-out-" + studentId;
+                $(timeField).text(response.time); // ✅ Update with formatted Manila Time
+
+                if (action === "Time In") {
+                    button.removeClass("btn-success").addClass("btn-danger");
+                    button.html('<i class="fa-solid fa-sign-out-alt"></i> Time Out');
+                    button.data("status", "Time Out");
+                } else {
+                    button.prop("disabled", true);
+                }
+
+                showAttendanceToast(response.message);
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function(response) {
+            alert("Error: " + response.responseJSON.message);
+        }
+    });
+});
+
+// ✅ Function to Show Toast Notification
+function showAttendanceToast(message) {
+    $("#toastMessage").text(message);
+    let toastElement = new bootstrap.Toast(document.getElementById("attendanceToast"));
+    toastElement.show();
+}
+
+
+// Function to Show Toast Notification
+function showAttendanceToast(message) {
+    $("#toastMessage").text(message);
+    let toastElement = new bootstrap.Toast(document.getElementById("attendanceToast"));
+    toastElement.show();
+}
       $("#searchStudent").on("keyup", function(){
         var value = $(this).val().toLowerCase();
         $("#studentsTable tr").filter(function(){

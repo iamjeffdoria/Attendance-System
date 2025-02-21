@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Teacher, Subject, Student
+from .models import Teacher, Subject, Student,Attendance
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -8,8 +8,52 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from .serializers import SubjectSerializer
 from django.http import JsonResponse,HttpResponseRedirect
+from django.utils.timezone import now
+from django.utils.timezone import localtime
+import pytz
 
+def mark_attendance(request):
+    if request.method == "POST":
+        student_id = request.POST.get("student_id")
+        subject_id = request.POST.get("subject_id")
+        action = request.POST.get("action")  # "Time In" or "Time Out"
 
+        if not student_id or not subject_id or not action:
+            return JsonResponse({"status": "error", "message": "Invalid data received."}, status=400)
+
+        student = get_object_or_404(Student, id=student_id)
+        subject = get_object_or_404(Subject, id=subject_id)
+        teacher_id = request.session.get("teacher_id")
+        teacher = Teacher.objects.filter(id=teacher_id).first()
+
+        # Convert time to Manila Time
+        manila_tz = pytz.timezone("Asia/Manila")
+        current_time = localtime(now(), timezone=manila_tz).strftime("%I:%M %p")  # ✅ Convert to 12-hour format in Manila Time
+
+        attendance, created = Attendance.objects.get_or_create(
+            student=student,
+            subject=subject,
+            teacher=teacher,
+            date=now().date(),
+            defaults={"status": "Present"}
+        )
+
+        if action == "Time In" and not attendance.time_in:
+            attendance.time_in = now().time()
+            message = f"{student.full_name} Time In recorded."
+            attendance.save()
+            return JsonResponse({"status": "success", "message": message, "time": current_time, "field": "time_in"})
+
+        elif action == "Time Out" and not attendance.time_out:
+            attendance.time_out = now().time()
+            message = f"{student.full_name} Time Out recorded."
+            attendance.save()
+            return JsonResponse({"status": "success", "message": message, "time": current_time, "field": "time_out"})
+
+        else:
+            return JsonResponse({"status": "error", "message": "Attendance already recorded."}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Invalid request method."}, status=405)
 
 def teacher_dashboard(request):
     if 'teacher_username' not in request.session:

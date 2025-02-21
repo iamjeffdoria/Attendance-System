@@ -127,3 +127,7 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+TIME_ZONE = 'Asia/Manila'
+USE_TZ = True  # Ensure Django stores times in UTC but converts them to local time
+

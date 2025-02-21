@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 
 from django.urls import path
 from .import views
+from .views import mark_attendance
 
 urlpatterns = [
     path('', views.teacher_login, name="teacher-login"),
@@ -16,6 +17,7 @@ urlpatterns = [
     path('student-attendance/<int:id>/', views.student_attendance, name='student-attendance'),
     path("attendance/<int:subject_id>/add-students/", views.add_students_to_subject, name="add-students-to-subject"),
     path('student-register/', views.student_register, name='student-register'),
+    path('mark-attendance/', views.mark_attendance, name='mark-attendance'),
    
 ]
 
