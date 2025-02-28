@@ -46,87 +46,116 @@
     </div>
 </div>
 
-      
-            <h5 class="card-title">Student Attendance for {{subject.name}}-{{subject.course_year_section}}</h5>
-    <!-- Buttons Container -->
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-center gap-3 py-2 px-3">
+<!-- Attendance Header -->
+<div class="d-flex align-items-center justify-content-between p-3 bg-white shadow-sm rounded-3 border">
+  <div class="d-flex align-items-center">
+    <div class="icon-container bg-primary text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 50px; height: 50px;">
+      <i class="fas fa-user-check fs-5"></i>
+    </div>
+    <div>
+      <h5 class="fw-bold text-dark mb-0">
+        Attendance - <span class="text-uppercase text-primary">{{ subject.name }}</span>
+      </h5>
+      <small class="text-muted">{{ subject.course_year_section }}</small>
+    </div>
+  </div>
+</div>
 
-      <!-- Time Frame Filter -->
-      <div class="d-flex flex-column flex-md-row align-items-center gap-2">
-          <label for="timeframe" class="form-label mb-0">Filter by Time Frame</label>
-          <select class="form-select w-auto" id="timeframe">
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-          </select>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="d-flex flex-column flex-md-row gap-3">
-        <button type="button" class="btn btn-primary btn-sm px-4 py-2" id="startAttendance" data-bs-toggle="modal" data-bs-target="#attendanceChoiceModal">
-          <i class="fa-solid fa-play"></i> Start Attendance
+<!-- Students Section -->
+<div class="p-3 bg-white shadow-sm rounded-3 mt-3 border d-flex align-items-center">
+  <div class="icon-container bg-success text-white d-flex align-items-center justify-content-center rounded-circle me-3" style="width: 50px; height: 50px;">
+    <i class="fas fa-user-plus fs-5"></i>
+  </div>
+  <h5 class="fw-bold text-dark mb-0">Students Added in This Subject</h5>
+</div>
+<!-- Action Buttons Section -->
+<div class="p-3 bg-white shadow-sm rounded-3 mt-3 border">
+  <div class="row g-2 justify-content-center justify-content-md-end">
+    <div class="col-12 col-md-3">
+      <button type="button" class="btn btn-primary btn-sm d-flex align-items-center w-100 px-3 py-2" id="startAttendance" data-bs-toggle="modal" data-bs-target="#attendanceChoiceModal">
+        <i class="fa-solid fa-play me-2"></i> Start Attendance
       </button>
-          <button type="button" class="btn btn-success px-4 py-2" id="printAttendance">
-            <i class="bi bi-printer"></i> Print
-          </button>
-    
-          <button type="button" class="btn btn-outline-primary btn-sm px-4 py-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
-              <i class="fa-solid fa-plus"></i> Add Student
-          </button>
+    </div>
+    <div class="col-12 col-md-3">
+      <button type="button" class="btn btn-success btn-sm d-flex align-items-center w-100 px-3 py-2" id="printAttendance">
+        <i class="bi bi-printer me-2"></i> Print
+      </button>
+    </div>
+    <div class="col-12 col-md-3">
+      <button type="button" class="btn btn-outline-primary btn-sm d-flex align-items-center w-100 px-3 py-2" data-bs-toggle="modal" data-bs-target="#addStudentModal">
+        <i class="fa-solid fa-plus me-2"></i> Add Student
+      </button>
+    </div>
+    <!-- Date Picker Input -->
+    <div class="col-12 col-md-3">
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
+        <input type="date" class="form-control" id="specificDateFilter">
       </div>
     </div>
+  </div>
+</div>
 
-        <div class="table-responsive">
-          <table class="table datatable">
-            <thead>
-              <tr>
-                <th>Name</th>
+</div>
+
+
+<div class="table-responsive mt-4" style="min-height: 400px">
+  <table class="table datatable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>CYS</th>
+        <th>Time In</th>
+        <th>Time Out</th>
+        <th>Attendance Status</th>
+        <th>Time in / Time Out</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in assigned_students %}
+        <tr>
+          <td>{{ student.full_name }}</td>
+          <td>{{ student.course }} {{ student.year_section }}</td>
+          <td id="time-in-{{ student.id }}">
+            {% if student.attendance and student.attendance.time_in %}
+                {{ student.attendance.time_in|time:"g:i A" }}
              
-    
-                <th>CYS</th>
-                <th>Time In</th>
-                <th>Time Out</th>
-                <th>Attendance Status</th>
-                <th>Time In/ Time Out</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for student in assigned_students %}
-                <tr>
-                  <td>{{ student.full_name }}</td>
-              
-                  <td>{{ student.course }} {{ student.year_section }}</td>
-                  <td id="time-in-{{ student.id }}">
-                    {% if student.attendance.time_in %} 
-                        {{ student.attendance.time_in|time:"g:i A" }} <!-- ✅ Shows 12-hour format -->
-                    {% else %} -- {% endif %}
-                </td>
-                <td id="time-out-{{ student.id }}">
-                    {% if student.attendance.time_out %} 
-                        {{ student.attendance.time_out|time:"g:i A" }} <!-- ✅ Shows 12-hour format -->
-                    {% else %} -- {% endif %}
-                </td>
-                
-                                
-                  <td>Present</td>
-                  <td>
-                    <div class="btn-group" role="group">
-                      <button class="btn btn-success btn-sm mark-attendance" 
+            {% else %} 
+                -- 
+            {% endif %}
+        </td>
+        
+          <td id="time-out-{{ student.id }}">
+            {% if student.attendance and student.attendance.time_out %}
+              {{ student.attendance.time_out|time:"g:i A" }}
+            {% else %} 
+              -- 
+            {% endif %}
+          </td>
+          <td>
+            {% if student.attendance and student.attendance.time_in %}
+              Present
+            {% else %}
+              Absent
+            {% endif %}
+          </td>
+          <td>
+            <div class="btn-group" role="group">
+              <button class="btn btn-success btn-sm mark-attendance" 
                       data-student="{{ student.id }}" 
                       data-status="Time In"
-                      disabled> <!-- Disabled by default -->
+                      disabled> 
                 <i class="fa-solid fa-sign-in-alt"></i> Time In
               </button>
-              
-                 
-                    </div>
-                  </td>
-                  
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
 
       </div>
     </div>
@@ -161,7 +190,7 @@
   <div class="modal-dialog modal-dialog-centered mw-100 mx-auto" style="width:750px;">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addStudentModalLabel">Add Students to Subject</h5>
+        <h5 class="modal-title" id="addStudentModalLabel">List of Enrolled students</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -211,7 +240,51 @@
 <script>
   // jQuery for handling filter changes
   $(document).ready(function() {
-    let timerInterval;
+
+
+    const dateInput = document.getElementById("specificDateFilter");
+    const subjectId = "{{ subject.id }}"; // Get subject ID from the template
+
+    dateInput.addEventListener("change", function () {
+        const selectedDate = dateInput.value;
+        
+        if (selectedDate) {
+            fetch(`/get_attendance_by_date/?subject_id=${subjectId}&date=${selectedDate}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    updateAttendanceTable(data.data);
+                }
+            })
+            .catch(error => console.error("Error fetching attendance:", error));
+        }
+    });
+
+    function updateAttendanceTable(attendanceData) {
+        attendanceData.forEach(student => {
+            const timeInCell = document.getElementById(`time-in-${student.student_id}`);
+            const timeOutCell = document.getElementById(`time-out-${student.student_id}`);
+
+            if (timeInCell) timeInCell.innerHTML = student.time_in;
+            if (timeOutCell) timeOutCell.innerHTML = student.time_out;
+        });
+    }
+
+    $("#printAttendance").click(function() {
+    // Open the PDF preview in a new window or modal
+    window.open("{% url 'pdf_preview' %}", "_blank");
+  });
+  
+  
+  
+let timerInterval;
 let totalSeconds = 0;
 let currentAttendanceType = ""; // Store current attendance type
 
@@ -250,6 +323,7 @@ function startAttendanceTimer(actionType) {
         }, 1000);
     }
 }
+
 
 // Stop the timer when manually closed
 function stopAttendanceTimer() {
@@ -382,6 +456,7 @@ function showAttendanceToast(message) {
           },
           success: function(response) {
             if (response.status === "success") {
+              showAttendanceToast(response.message)
               location.reload(); // Reload page to display updated students
             } else {
               alert(response.message);
@@ -408,45 +483,6 @@ function showAttendanceToast(message) {
       },
       // Add more records as necessary
     ];
-
-    function loadFilteredData(timeFrame) {
-      let filteredData = tableData;
-      const today = new Date();
-      const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay())); // Set to the start of the week
-      const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1); // Set to the start of the month
-
-      if (timeFrame === "today") {
-        filteredData = tableData.filter(item => new Date(item.startDate).toDateString() === new Date().toDateString());
-      } else if (timeFrame === "week") {
-        filteredData = tableData.filter(item => new Date(item.startDate) >= startOfWeek);
-      } else if (timeFrame === "month") {
-        filteredData = tableData.filter(item => new Date(item.startDate) >= startOfMonth);
-      }
-
-      // Clear current table and insert filtered rows
-      $('#attendance-data').empty();
-      filteredData.forEach(item => {
-        $('#attendance-data').append(`
-          <tr>
-            <td>${item.name}</td>
-            <td>${item.ext}</td>
-            <td>${item.city}</td>
-            <td>${item.startDate}</td>
-            <td>${item.completion}</td>
-          </tr>
-        `);
-      });
-    }
-
-
-    // Load data initially for "Today"
-    loadFilteredData("today");
-
-    // Change filter based on dropdown selection
-    $('#timeframe').change(function() {
-      const selectedTimeframe = $(this).val();
-      loadFilteredData(selectedTimeframe);
-    });
   });
 </script>
 

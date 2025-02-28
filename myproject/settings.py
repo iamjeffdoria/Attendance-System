@@ -131,3 +131,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 TIME_ZONE = 'Asia/Manila'
 USE_TZ = True  # Ensure Django stores times in UTC but converts them to local time
 
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+

@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.timezone import now
 
 class Teacher(models.Model):
     username = models.CharField(max_length=255, unique=True)
@@ -47,8 +47,8 @@ class Attendance(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="attendance_records")
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="attendance_records")
     teacher = models.ForeignKey(Teacher, on_delete=models.SET_NULL, null=True, related_name="attendance_records")
-    status  = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    date    = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    date = models.DateField(default=now)  # Ensure date is set explicitly
     time_in = models.TimeField(blank=True, null=True)
     time_out = models.TimeField(blank=True, null=True)
 
