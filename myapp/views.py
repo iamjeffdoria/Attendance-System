@@ -27,6 +27,7 @@ from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, 
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.styles import ParagraphStyle
 from django.conf import settings
+from django.utils.timezone import localdate
 
 
 
@@ -355,10 +356,13 @@ def student_attendance(request, id):
     # Fetch students who are already assigned to the subject
     assigned_students = subject.students.all()
 
+    today = localdate()
+
     # Fetch all attendance records for assigned students in this subject
     attendance_records = Attendance.objects.filter(
         student__in=assigned_students,
-        subject=subject
+        subject=subject,
+        date= today
     ).order_by('date')
 
     # Group attendance records by student ID
