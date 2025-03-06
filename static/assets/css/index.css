@@ -1,0 +1,499 @@
+body
+{
+   background-color: #FFFFFF;
+   color: #000000;
+   font-family: Arial;
+   font-weight: normal;
+   font-size: 16px;
+   line-height: 1.1875;
+   margin: 0;
+   padding: 0;
+}
+#Table1
+{
+   border-radius: 0px;
+   border: 2px solid #000000;
+   background-color: transparent;
+   background-image: none;
+   border-collapse: collapse;
+   border-spacing: 1px;
+   margin: 0;
+}
+#Table1 td, #Table1 th
+{
+   padding: 0;
+}
+#Table1 td div
+{
+   white-space: nowrap;
+}
+#Table1 p, #Table1 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#Table1 .cell0
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 893px;
+   height: 1404px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#Table2
+{
+   border-radius: 0px;
+   border: 1px solid #000000;
+   background-color: transparent;
+   background-image: none;
+   border-collapse: collapse;
+   border-spacing: 0px;
+   margin: 0;
+}
+#Table2 td, #Table2 th
+{
+   padding: 0;
+}
+#Table2 td div
+{
+   white-space: nowrap;
+}
+#Table2 p, #Table2 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#Table2 .cell0
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 none;
+   text-align: left;
+   vertical-align: top;
+   width: 106px;
+   height: 114px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#Table2 .cell1
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 none;
+   text-align: left;
+   vertical-align: top;
+   width: 110px;
+   height: 114px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#Table3
+{
+   border-radius: 0px;
+   border: 1px solid #000000;
+   background-color: transparent;
+   background-image: none;
+   border-collapse: collapse;
+   border-spacing: 1px;
+   margin: 0;
+}
+#Table3 td, #Table3 th
+{
+   padding: 0;
+}
+#Table3 td div
+{
+   white-space: nowrap;
+}
+#Table3 p, #Table3 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#Table3 .cell0
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #000000 solid;
+   text-align: center;
+   vertical-align: top;
+   width: 422px;
+   height: 82px;
+}
+#Table3 .cell1
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #000000 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 422px;
+   height: 31px;
+}
+#Table4
+{
+   border-radius: 0px;
+   border: 2px solid #000000;
+   background-color: transparent;
+   background-image: none;
+   border-collapse: collapse;
+   border-spacing: 1px;
+   margin: 0;
+}
+#Table4 td, #Table4 th
+{
+   padding: 0;
+}
+#Table4 td div
+{
+   white-space: nowrap;
+}
+#Table4 p, #Table4 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#Table4 .cell0
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #000000 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 241px;
+   height: 18px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#Table4 .cell1
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #C0C0C0 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 241px;
+   height: 16px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#wb_Text1 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text1 div
+{
+   text-align: left;
+}
+#wb_Text2 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text2 div
+{
+   text-align: left;
+}
+#wb_Text3 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text3 div
+{
+   text-align: left;
+}
+#wb_Image1
+{
+   vertical-align: top;
+}
+#Image1
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   box-sizing: border-box;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Image2
+{
+   vertical-align: top;
+}
+#Image2
+{
+   border: 0px solid #000000;
+   border-radius: 0px;
+   box-sizing: border-box;
+   padding: 0;
+   margin: 0;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+#wb_Text4 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: center;
+}
+#wb_Text4 div
+{
+   text-align: center;
+}
+#wb_Text5 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text5 div
+{
+   text-align: left;
+}
+#wb_Text6 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text6 div
+{
+   text-align: left;
+}
+#wb_Text7 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text7 div
+{
+   text-align: left;
+}
+#Table5
+{
+   border-radius: 0px;
+   border: 1px solid #000000;
+   background-color: transparent;
+   background-image: none;
+   border-collapse: collapse;
+   border-spacing: 1px;
+   margin: 0;
+}
+#Table5 td, #Table5 th
+{
+   padding: 0;
+}
+#Table5 td div
+{
+   white-space: nowrap;
+}
+#Table5 p, #Table5 ul
+{
+   margin: 0;
+   padding: 0;
+}
+#Table5 .cell0
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #000000 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 146px;
+   height: 30px;
+}
+#Table5 .cell1
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #000000 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 146px;
+   height: 30px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#Table5 .cell2
+{
+   background-color: transparent;
+   background-image: none;
+   border: 1px #000000 solid;
+   text-align: left;
+   vertical-align: top;
+   width: 148px;
+   height: 30px;
+   color: #000000;
+   font-family: Arial;
+   font-size: 16px;
+   line-height: 18px;
+}
+#Table5 .cell3 {
+    background-color: transparent;
+    background-image: none;
+    border: 1px #000000 solid;
+    text-align: center;
+    vertical-align: top;
+    width: 146px;
+    height: 14px; /* Adjust the height as needed */
+    color: #000000;
+    font-family: Arial;
+    font-size: 10px; /* Adjust the font size as needed */
+    line-height: 12px; /* Adjust the line height as needed */
+    padding: 0; /* Ensure no padding affects the height */
+}
+
+
+#Table5 .cell4 {
+    background-color: transparent;
+    background-image: none;
+    border: 1px #000000 solid;
+    text-align: left;
+    vertical-align: top;
+    width: 148px;
+    height: 14px; /* Adjust the height as needed */
+    color: #000000;
+    font-family: Arial;
+    font-size: 10px; /* Adjust the font size as needed */
+    line-height: 12px; /* Adjust the line height as needed */
+    padding: 0; /* Ensure no padding affects the height */
+}
+#wb_Text8 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text8 div
+{
+   text-align: left;
+}
+#wb_Text9 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text9 div
+{
+   text-align: left;
+}
+#wb_Text10 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text10 div
+{
+   text-align: left;
+}
+#wb_Text11 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text11 div
+{
+   text-align: left;
+}
+#wb_Text12 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text12 div
+{
+   text-align: left;
+}
+#wb_Text13 
+{
+   background-color: transparent;
+   background-image: none;
+   border: 0px solid #000000;
+   border-radius: 0px;
+   padding: 0;
+   margin: 0;
+   text-align: left;
+}
+#wb_Text13 div
+{
+   text-align: left;
+}
+

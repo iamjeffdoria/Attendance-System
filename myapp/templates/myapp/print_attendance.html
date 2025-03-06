@@ -1,0 +1,109 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Attendance Report</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header img {
+            max-width: 80px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .header h1, .header h2 {
+            margin: 5px 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .header h2 {
+            font-size: 18px;
+        }
+        .report-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Professional Header -->
+    <div class="header">
+        <img src="{% static 'assets/img/pit.png' %}" alt="Institution Logo">
+        <h1>PALOMPON INSTITUTE OF TECHNOLOGY</h1>
+        <h2>ATTENDANCE MANAGEMENT SYSTEM</h2>
+    </div>
+
+    <!-- Report Title -->
+    <div class="report-title">
+        Attendance Report for {{ subject.name }}
+    </div>
+    <p style="text-align: center;">Date: {{ today }}</p>
+
+    <!-- Attendance Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Course</th>
+                <th>Year & Section</th>
+                <th>Time In</th>
+                <th>Time Out</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in assigned_students %}
+                <tr>
+                    <td>{{ student.full_name }}</td>
+                    <td>{{ student.course }}</td>
+                    <td>{{ student.year_section }}</td>
+                    <td>
+                        {% if student.attendance and student.attendance.time_in %}
+                            {{ student.attendance.time_in|date:"h:i A" }}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if student.attendance and student.attendance.time_out %}
+                            {{ student.attendance.time_out|date:"h:i A" }}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

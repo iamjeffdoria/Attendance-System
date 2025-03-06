@@ -28,6 +28,39 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.styles import ParagraphStyle
 from django.conf import settings
 from django.utils.timezone import localdate
+from django.template.loader import render_to_string
+
+
+
+def print_attendance(request, subject_id):
+    subject = get_object_or_404(Subject, id=subject_id)
+    assigned_students = subject.students.all()
+    selected_date = request.GET.get('date', localdate())
+    attendance_records = Attendance.objects.filter(
+        student__in=assigned_students,
+        subject=subject,
+        date=selected_date
+    ).order_by('date')
+
+    student_attendance_map = defaultdict(lambda: {'time_in': None, 'time_out': None})
+
+    for att in attendance_records:
+        student_data = student_attendance_map[att.student.id]
+        if att.time_in and not student_data['time_in']:
+            student_data['time_in'] = att.time_in
+        if att.time_out and not student_data['time_out']:
+            student_data['time_out'] = att.time_out
+
+    for student in assigned_students:
+        student.attendance = student_attendance_map.get(student.id, None)
+
+    html_content = render_to_string('myapp/test_print.html', {
+        'assigned_students': assigned_students,
+        'subject': subject,
+        'today': selected_date,
+    })
+
+    return HttpResponse(html_content)
 
 
 
@@ -79,81 +112,6 @@ def get_attendance_by_date(request):
 
     return JsonResponse({"error": "Invalid request"}, status=400)
 
-
-def pdf_test_page(request):
-    buffer = io.BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
-    width, height = A4
-    
-    logo_path = os.path.join(settings.BASE_DIR, 'static', 'assets', 'img', 'NEWPIT.png')
-    
-    try:
-        logo = Image(logo_path, width=2.5*cm, height=2.2*cm)
-    except Exception:
-        logo = Paragraph("LOGO UNAVAILABLE", ParagraphStyle(
-            name='LogoPlaceholder', fontName='Helvetica-Bold', fontSize=10, alignment=1, textColor=colors.darkgrey
-        ))
-    
-    school_name = Paragraph("<b>PALOMPON INSTITUTE OF TECHNOLOGY</b>", ParagraphStyle(
-        name='SchoolName', fontName='Helvetica-Bold', fontSize=16, alignment=1
-    ))
-    
-    school_address = Paragraph("Palompon, Leyte 6538", ParagraphStyle(
-        name='SchoolAddress', fontName='Helvetica', fontSize=12, alignment=1
-    ))
-    
-    style_info = ParagraphStyle(name='ContactInfo', fontName='Helvetica', fontSize=9, alignment=1)
-    
-    contact_info = [
-        Paragraph("Phone: (555) 123-4567", style_info),
-        Paragraph("Email: info@pit.edu.ph", style_info),
-        Paragraph("Website: www.pit.edu.ph", style_info),
-        Paragraph("Address: Main Campus", style_info),
-        Paragraph("ISO 9001:2015 Certified", style_info)
-    ]
-    
-    header_data = [
-        [logo, school_name, ""],
-        ["", school_address, contact_info[0]],
-        ["", "", contact_info[1]],
-        ["", "", contact_info[2]],
-        ["", "", contact_info[3]],
-        ["", "", contact_info[4]]
-    ]
-    
-    col_widths = [3*cm, 10*cm, 6*cm]
-    header_table = Table(header_data, colWidths=col_widths)
-    
-    header_table.setStyle(TableStyle([
-        ('SPAN', (0, 0), (0, 5)),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('ALIGN', (1, 0), (1, -1), 'CENTER'),
-        ('ALIGN', (2, 0), (2, -1), 'RIGHT'),
-        ('TOPPADDING', (0, 0), (-1, -1), 6),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
-        ('BOX', (0, 0), (-1, -1), 1, colors.black),
-        ('LINEBELOW', (0, 0), (-1, 0), 1, colors.black),
-    ]))
-    
-    elements = [header_table]
-    doc.build(elements)
-    
-    pdf = buffer.getvalue()
-    buffer.close()
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="header_only.pdf"'
-    response.write(pdf)
-    return response
-
-
-def pdf_preview(request):
-    """
-    Render an HTML preview of the PDF page with an embedded preview or link.
-    """
-    # In a real-world scenario, you might generate the PDF and
-    # save it temporarily or embed it in the page. Here we simply
-    # pass the URL for the PDF download.
-    return render(request, 'myapp/pdf_preview.html', {'pdf_url': '/pdf-test-page/'})
 
 
 def mark_attendance(request):

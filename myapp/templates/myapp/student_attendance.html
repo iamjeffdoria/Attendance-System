@@ -276,11 +276,23 @@
             if (timeOutCell) timeOutCell.innerHTML = student.time_out;
         });
     }
-
     $("#printAttendance").click(function() {
-    // Open the PDF preview in a new window or modal
-    window.open("{% url 'pdf_preview' %}", "_blank");
-  });
+      const selectedDate = document.getElementById("specificDateFilter").value;
+      if (selectedDate) {
+        // Create an iframe to load the PDF
+        var iframe = document.createElement('iframe');
+        iframe.style.display = 'none';
+        iframe.src = "{% url 'print_attendance' subject.id %}?date=" + selectedDate;
+        document.body.appendChild(iframe);
+
+        // Trigger the print dialog once the PDF is loaded
+        iframe.onload = function() {
+          iframe.contentWindow.print();
+        };
+      } else {
+        alert("Please select a date.");
+      }
+    });
   
   
   

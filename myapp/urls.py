@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from .import views
 from .views import mark_attendance
-from .views import pdf_test_page, pdf_preview, get_attendance_by_date
+from .views import get_attendance_by_date
 
 
 urlpatterns = [
@@ -20,9 +20,8 @@ urlpatterns = [
     path("attendance/<int:subject_id>/add-students/", views.add_students_to_subject, name="add-students-to-subject"),
     path('student-register/', views.student_register, name='student-register'),
     path('mark-attendance/', views.mark_attendance, name='mark-attendance'),
-    path('pdf-test-page/', pdf_test_page, name='pdf_test_page'),
-    path('pdf-preview/', pdf_preview, name='pdf_preview'),
-    path('get_attendance_by_date/', get_attendance_by_date, name='get_attendance_by_date'), 
+    path('get_attendance_by_date/', get_attendance_by_date, name='get_attendance_by_date'),
+     path('print-attendance/<int:subject_id>/', views.print_attendance, name='print_attendance'), 
 ]
 
 if settings.DEBUG:
