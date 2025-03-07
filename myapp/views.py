@@ -31,6 +31,10 @@ from django.utils.timezone import localdate
 from django.template.loader import render_to_string
 
 
+def teacher_profile(request):
+    return render(request, 'myapp/teacher-profile.html')
+
+
 
 def print_attendance(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
@@ -193,12 +197,13 @@ def teacher_login(request):
                 request.session['teacher_id'] = teacher.id
                 request.session['teacher_username'] = teacher.username
                 request.session['teacher_name'] = teacher.full_name
+                request.session['teacher_email'] = teacher.email
                 messages.success(request, "You are logged in!")
                 return redirect('teacher-dashboard')
             else:
                 messages.warning(request, "Invalid Username or Password.")
         except Teacher.DoesNotExist:
-            messages.warning(request,"Invalid username or password")     
+            messages.warning(request,"Invalid username or password")  
 
     content = {'exclude_layout': True, }
     return render(request, 'myapp/teacher_login.html', content)
