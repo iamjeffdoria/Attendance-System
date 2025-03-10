@@ -208,6 +208,30 @@ def teacher_login(request):
     content = {'exclude_layout': True, }
     return render(request, 'myapp/teacher_login.html', content)
 
+    
+def update_teacher_profile(request):
+    if request.method == 'POST':
+        teacher_id = request.session.get('teacher_id')
+        if not teacher_id:
+            messages.error(request, 'Unauthorized access.')
+            return redirect('teacher-login')
+
+        teacher = Teacher.objects.get(id=teacher_id)
+        teacher.username = request.POST.get('username')
+        teacher.full_name = request.POST.get('full_name')
+        teacher.email = request.POST.get('email')
+        teacher.save()
+
+        # Update session data
+        request.session['teacher_username'] = teacher.username
+        request.session['teacher_name'] = teacher.full_name
+        request.session['teacher_email'] = teacher.email
+
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('teacher-profile')
+
+    return redirect('teacher-profile')
+
 def custom_logout(request):
     request.session.flush()
     messages.success(request, 'You are logged out successfully!')

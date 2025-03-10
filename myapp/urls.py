@@ -22,7 +22,8 @@ urlpatterns = [
     path('mark-attendance/', views.mark_attendance, name='mark-attendance'),
     path('get_attendance_by_date/', get_attendance_by_date, name='get_attendance_by_date'),
     path('print-attendance/<int:subject_id>/', views.print_attendance, name='print_attendance'),
-    path('teacher-profile', views.teacher_profile, name="teacher-profile"),
+    path('teacher-profile/', views.teacher_profile, name="teacher-profile"),
+    path('update-teacher-profile/', views.update_teacher_profile, name='update-teacher-profile'),
 ]
 
 if settings.DEBUG:
