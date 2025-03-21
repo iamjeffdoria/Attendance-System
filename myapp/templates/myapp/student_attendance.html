@@ -90,9 +90,14 @@
     <div class="col-12 col-md-3">
       <div class="input-group">
         <span class="input-group-text"><i class="fa-solid fa-calendar-day"></i></span>
-        <input type="date" class="form-control" id="specificDateFilter">
+        <input type="date" class="form-control" id="startDateFilter">
+        <input type="date" class="form-control" id="endDateFilter">
+        <button class="btn btn-outline-secondary" type="button" id="clearDateFilter">Clear</button>
       </div>
     </div>
+
+
+
   </div>
 </div>
 
@@ -240,60 +245,128 @@
 <script>
   // jQuery for handling filter changes
   $(document).ready(function() {
-
-
-    const dateInput = document.getElementById("specificDateFilter");
+    const startDateInput = document.getElementById("startDateFilter");
+    const endDateInput = document.getElementById("endDateFilter");
+    const clearDateFilterButton = document.getElementById("clearDateFilter");
     const subjectId = "{{ subject.id }}"; // Get subject ID from the template
+    const savedStartDate = localStorage.getItem("selectedStartDate");
+    const savedEndDate = localStorage.getItem("selectedEndDate");
 
-    dateInput.addEventListener("change", function () {
-        const selectedDate = dateInput.value;
-        
-        if (selectedDate) {
-            fetch(`/get_attendance_by_date/?subject_id=${subjectId}&date=${selectedDate}`, {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error(data.error);
-                } else {
-                    updateAttendanceTable(data.data);
-                }
-            })
-            .catch(error => console.error("Error fetching attendance:", error));
-        }
-    });
+    // Restore the date inputs if dates were previously selected
+    if (savedStartDate) {
+        startDateInput.value = savedStartDate;
+    }
+    if (savedEndDate) {
+        endDateInput.value = savedEndDate;
+    }
+
+    function fetchAttendance(startDate, endDate) {
+        fetch(`/get_attendance_by_date/?subject_id=${subjectId}&start_date=${startDate}&end_date=${endDate}`, {
+            method: "GET",
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+            } else {
+                updateAttendanceTable(data.data);
+            }
+        })
+        .catch(error => console.error("Error fetching attendance:", error));
+    }
 
     function updateAttendanceTable(attendanceData) {
-        attendanceData.forEach(student => {
-            const timeInCell = document.getElementById(`time-in-${student.student_id}`);
-            const timeOutCell = document.getElementById(`time-out-${student.student_id}`);
+        const tbody = document.querySelector(".datatable tbody");
+        tbody.innerHTML = ""; // Clear existing table data
 
-            if (timeInCell) timeInCell.innerHTML = student.time_in;
-            if (timeOutCell) timeOutCell.innerHTML = student.time_out;
+        attendanceData.forEach(student => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${student.full_name}</td>
+                <td>${student.course} ${student.year_section}</td>
+                <td id="time-in-${student.student_id}">${student.time_in}</td>
+                <td id="time-out-${student.student_id}">${student.time_out}</td>
+                <td>${student.status}</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-success btn-sm mark-attendance" 
+                                data-student="${student.student_id}" 
+                                data-status="Time In"
+                                disabled> 
+                            <i class="fa-solid fa-sign-in-alt"></i> Time In
+                        </button>
+                    </div>
+                </td>
+            `;
+
+            tbody.appendChild(row);
         });
     }
+
+    function handleDateChange() {
+        const startDate = startDateInput.value;
+        const endDate = endDateInput.value;
+        
+        if (startDate && endDate) {
+            localStorage.setItem("selectedStartDate", startDate); // Store start date in localStorage
+            localStorage.setItem("selectedEndDate", endDate); // Store end date in localStorage
+            fetchAttendance(startDate, endDate);
+        } else if (startDate) {
+            localStorage.setItem("selectedStartDate", startDate); // Store start date in localStorage
+            localStorage.removeItem("selectedEndDate"); // Remove end date from localStorage
+            fetchAttendance(startDate, startDate);
+        }
+    }
+
+    function clearDateFilter() {
+    startDateInput.value = "";
+    endDateInput.value = "";
+    localStorage.removeItem("selectedStartDate");
+    localStorage.removeItem("selectedEndDate");
+
+    // Clear only the "Time In" and "Time Out" columns
+    const timeInCells = document.querySelectorAll('[id^="time-in-"]');
+    const timeOutCells = document.querySelectorAll('[id^="time-out-"]');
+
+    timeInCells.forEach(cell => {
+        cell.textContent = "--";
+    });
+
+    timeOutCells.forEach(cell => {
+        cell.textContent = "--";
+    });
+}
+    startDateInput.addEventListener("change", handleDateChange);
+    endDateInput.addEventListener("change", handleDateChange);
+    clearDateFilterButton.addEventListener("click", clearDateFilter);
+
+    // Fetch attendance data on page load if dates are already selected
+    if (savedStartDate) {
+        fetchAttendance(savedStartDate, savedEndDate || savedStartDate);
+    }
+
     $("#printAttendance").click(function() {
-      const selectedDate = document.getElementById("specificDateFilter").value;
-      if (selectedDate) {
+    const startDate = document.getElementById("startDateFilter").value;
+    const endDate = document.getElementById("endDateFilter").value || startDate;
+    if (startDate) {
         // Create an iframe to load the PDF
         var iframe = document.createElement('iframe');
         iframe.style.display = 'none';
-        iframe.src = "{% url 'print_attendance' subject.id %}?date=" + selectedDate;
+        iframe.src = "{% url 'print_attendance' subject.id %}?start_date=" + startDate + "&end_date=" + endDate;
         document.body.appendChild(iframe);
 
         // Trigger the print dialog once the PDF is loaded
         iframe.onload = function() {
-          iframe.contentWindow.print();
+            iframe.contentWindow.print();
         };
-      } else {
+    } else {
         alert("Please select a date.");
-      }
-    });
-  
+    }
+});
   
   
 let timerInterval;

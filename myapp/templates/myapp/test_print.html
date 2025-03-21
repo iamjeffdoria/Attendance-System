@@ -62,8 +62,20 @@
 <span style="color:#000000;font-family:'Times New Roman';font-size:16px;">Republic of&nbsp; the Philippines<br><strong>PALOMPON INSTITUTE OF TECHNOLOGY<br></strong>6538 Palompon , Leyte</span></div>
 <div id="wb_Text5" style="position:absolute;left:309px;top:97px;width:320px;height:15px;z-index:10;">
 <span style="color:#000000;font-family:'Times New Roman';font-size:13px;"><strong>ATTENDANCE MANAGEMENT SYSTEM</strong></span></div>
-<div id="wb_Text6" style="position:absolute;left:6px;top:157px;width:449px;height:17px;z-index:11;">
-<span style="color:#000000;font-family:Georgia;font-size:15px;"><strong>Attendance report for {{subject.name}}</strong></span></div>
+<div id="wb_Text6" style="position:absolute;left:20px;top:157px;width:449px;height:17px;z-index:11;">
+    <span style="color:#000000;font-family:Georgia;font-size:15px;"><strong>Attendance report for {{subject.name}}</strong></span>
+</div>
+<div id="wb_Text6" style="position:absolute;left:20px;top:157px;width:449px;height:17px;z-index:11;">
+    <span style="color:#000000;font-family:Georgia;font-size:15px;"><strong>Attendance report for {{subject.name}}</strong></span>
+</div>
+
+<div id="wb_Text7" style="position:absolute;left:20px;top:180px;width:449px;height:17px;z-index:12;">
+    {% if start_date and end_date %}
+        <span style="color:#000000;font-family:Georgia;font-size:15px;">Date: {{ start_date }} to {{ end_date }}</span>
+    {% else %}
+        <span style="color:#000000;font-family:Georgia;font-size:15px;">Date: {{ today }}</span>
+    {% endif %}
+</div>
 <div id="wb_Text7" style="position:absolute;left:6px;top:187px;width:449px;height:17px;z-index:12;">
 <span style="color:#000000;font-family:Georgia;font-size:15px;"><strong></strong></span></div>
 <table style="position:absolute;left:7px;top:221px;width:885px;height:59px;z-index:13;" id="Table5">

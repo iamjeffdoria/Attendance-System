@@ -33,17 +33,26 @@ from django.template.loader import render_to_string
 
 def teacher_profile(request):
     return render(request, 'myapp/teacher-profile.html')
-
-
-
 def print_attendance(request, subject_id):
     subject = get_object_or_404(Subject, id=subject_id)
     assigned_students = subject.students.all()
-    selected_date = request.GET.get('date', localdate())
+    start_date = request.GET.get('start_date', localdate())
+    end_date = request.GET.get('end_date', start_date)
+
+    try:
+        formatted_start_date = datetime.strptime(start_date, "%Y-%m-%d").strftime("%B %d, %Y")
+    except ValueError:
+        formatted_start_date = None
+
+    try:
+        formatted_end_date = datetime.strptime(end_date, "%Y-%m-%d").strftime("%B %d, %Y")
+    except ValueError:
+        formatted_end_date = formatted_start_date
+
     attendance_records = Attendance.objects.filter(
         student__in=assigned_students,
         subject=subject,
-        date=selected_date
+        date__range=(start_date, end_date)
     ).order_by('date')
 
     student_attendance_map = defaultdict(lambda: {'time_in': None, 'time_out': None})
@@ -61,21 +70,23 @@ def print_attendance(request, subject_id):
     html_content = render_to_string('myapp/test_print.html', {
         'assigned_students': assigned_students,
         'subject': subject,
-        'today': selected_date,
+        'start_date': formatted_start_date,
+        'end_date': formatted_end_date,
     })
 
     return HttpResponse(html_content)
 
 
-
 def get_attendance_by_date(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':  # Ensure it's an AJAX request
         subject_id = request.GET.get('subject_id')
-        selected_date = request.GET.get('date')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
 
-        if subject_id and selected_date:
+        if subject_id and start_date:
             try:
-                date_obj = datetime.strptime(selected_date, "%Y-%m-%d").date()
+                start_date_obj = datetime.strptime(start_date, "%Y-%m-%d").date()
+                end_date_obj = datetime.strptime(end_date, "%Y-%m-%d").date() if end_date else start_date_obj
                 subject = get_object_or_404(Subject, id=subject_id)
                 students = subject.students.all()
 
@@ -87,7 +98,7 @@ def get_attendance_by_date(request):
                 })
 
                 attendance_records = Attendance.objects.filter(
-                    subject=subject, date=date_obj  # Use date directly if it's a DateField
+                    subject=subject, date__range=(start_date_obj, end_date_obj)  # Use date range
                 ).order_by("time_in")
                 # Populate defaultdict with attendance records
                 for attendance in attendance_records:
@@ -115,7 +126,6 @@ def get_attendance_by_date(request):
                 return JsonResponse({"error": "Invalid date format"}, status=400)
 
     return JsonResponse({"error": "Invalid request"}, status=400)
-
 
 
 def mark_attendance(request):
